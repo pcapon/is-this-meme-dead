@@ -28,7 +28,7 @@ def check_meme_exist(id):
     return check
 
 def save_to_firebase(infos):
-    ref = db.reference('memes')
+    ref = db.reference('submission')
     ref.child(infos['id']).set(infos)
     return 1
 
@@ -46,7 +46,7 @@ def parse_url(url):
     header = soup.find("header", class_="rel c")
     dl = soup.select_one("#entry_body > aside > dl")
     parseResult['url'] = url
-    parseResult["image url"] = header.find("img")["data-src"]
+    parseResult["image_url"] = header.find("img")["data-src"]
     parseResult["title"] = header.select_one("h1 > a").string
     dlinfos = dl.find_all("a")[-2:]
 
@@ -80,7 +80,8 @@ def search():
     stringQuery = request.args.get('q')
     print(stringQuery)
     ref = db.reference('memes')
-    results = ref.order_by_key().start_at(stringQuery).end_at(stringQuery+"\uf8ff").get()
+    results = ref.get()
+    #results = ref.order_by_key().start_at(stringQuery).end_at(stringQuery+"\uf8ff").get()
     for key in results:
         endquery[key] = ref.child(key).get()
     return jsonify(endquery)
