@@ -21,9 +21,14 @@ export default new Router({
       component: () => import(/* webpackChunkName: "about" */ './views/About.vue'),
     },
     {
+      path: '/search/:string',
+      name: 'search',
+      component: () => import(/* webpackChunkName: "memes" */ './views/Search.vue'),
+    },
+    {
       path: '/memes/:id',
       name: 'memes',
-      component: () => import(/* webpackChunkName: "about" */ './views/Memes.vue'),
+      component: () => import(/* webpackChunkName: "memes" */ './views/Memes.vue'),
     },
   ],
 });

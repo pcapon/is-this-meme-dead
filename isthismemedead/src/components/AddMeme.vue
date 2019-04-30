@@ -9,9 +9,10 @@
     width="30%"
     center>
     <span>To add a meme you must take the link from <a href="https://knowyourmeme.com">Know Your Meme</a></span>
-    <el-form :model="form" :rules="rulesLink" ref="form">
+    <el-form :model="form"
+             :rules="rulesLink" ref="form" @submit.prevent.native="submitForm('form')" >
       <el-form-item label="Link" prop="link">
-        <el-input suffix-icon="" placeholder="exemple : https://knowyourmeme.com/memes/annoyed-bird" v-model="form.link" autocomplete="off"></el-input>
+        <el-input suffix-icon="" @submit.prevent placeholder="exemple : https://knowyourmeme.com/memes/annoyed-bird" v-model="form.link" autocomplete="off"></el-input>
       </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
@@ -57,8 +58,20 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
+          console.log(this.form.link);
+          axios.post('http://127.0.0.1:5000/addmeme', {
+            link: this.form.link,
+          })
+            .then((response) => {
+              console.log(response);
+              this.openMessage('Thank you for your submission, your meme will be added soon', 'success');
+            })
+            .catch((error) => {
+              console.log(error.response.data.error);
+              this.openMessage('An Unexpected Error Occurred: '.concat(error.response.data.error), 'error');
+            });
           this.centerDialogVisible = false;
-          this.openMessage('Thank you for your submission, your meme will be added soon', 'success');
+          this.form.link = '';
           return true;
         }
         // this.openMessage('An Unexpected Error Occurred', 'error');
