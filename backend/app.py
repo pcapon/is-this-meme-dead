@@ -27,8 +27,8 @@ def check_meme_exist(id):
     check = ref.child(id).get()
     return check
 
-def save_to_firebase(infos):
-    ref = db.reference('submission')
+def save_to_firebase(infos, type):
+    ref = db.reference(type)
     ref.child(infos['id']).set(infos)
     return 1
 
@@ -69,7 +69,7 @@ def add_meme():
     infos["status"] = 1
     infos["yes"] = 0
     infos["no"] = 0
-    save_to_firebase(infos)
+    save_to_firebase(infos, 'submission')
     print(infos)
 
     return jsonify(infos), status.HTTP_200_OK
@@ -80,11 +80,37 @@ def search():
     stringQuery = request.args.get('q')
     print(stringQuery)
     ref = db.reference('memes')
-    results = ref.get()
-    #results = ref.order_by_key().start_at(stringQuery).end_at(stringQuery+"\uf8ff").get()
+    results = ref.order_by_key().start_at(stringQuery).end_at(stringQuery+"\uf8ff").get()
+    # MUST DELETE THIS LATER !!!!
+    if stringQuery == 'testdev':
+        return jsonify(db.reference('memes').get())
+
     for key in results:
         endquery[key] = ref.child(key).get()
     return jsonify(endquery)
+
+@app.route('/acceptememe', methods=['POST'])
+def acceptmeme():
+    content = request.json
+    ref = db.reference('submission').child(content['id'])
+    ref.set({})
+    save_to_firebase(content, 'memes')
+    return jsonify(content), status.HTTP_200_OK
+
+@app.route('/getmeme', methods=['GET'])
+def getmeme():
+    id = request.args.get('id')
+    if id is None:
+        return jsonify(db.reference('memes').get())
+    print(id)
+    meme = db.reference('memes').child(id).get()
+    return jsonify(meme), status.HTTP_200_OK
+
+@app.route('/getsubmission', methods=['GET'])
+def getsub():
+    ref = db.reference('submission').get()
+    return jsonify(ref)
+
 
 if __name__ == "__main__":
     app.run(debug=True)
