@@ -30,7 +30,7 @@ export default {
 <style scoped>
   .scaled
   {
-    max-width: 60%;
+    max-width: 50%;
   }
   .padcard
   {
