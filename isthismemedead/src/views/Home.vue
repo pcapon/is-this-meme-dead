@@ -1,49 +1,35 @@
 <template>
   <div class="home">
-    <navbar/>
+      <navbar/>
+    <el-main>
     <el-row  type="flex" class="row-bg" justify="center">
-      <el-col :span="12">
         <!-- <img class="img-valign unselectable" src="../assets/skull.png"> -->
         <span class="mainTitle unselectable">💀 IS THIS MEME DEAD ?</span>
-      </el-col>
     </el-row>
     <div style="margin-top: 15px;">
       <el-row>
         <el-col :span="8" :offset="8">
-      <el-input placeholder="Search for memes"
-                @keyup.enter.native="goToSearch" v-model="query" class="input-with-select">
-        <el-button
-          slot="append"
-          type="primary"
-          icon="el-icon-search"
-          @click="goToSearch" >
-            Search
-        </el-button>
-      </el-input>
+      <searchbar></searchbar>
         </el-col>
       </el-row>
     </div>
-
+    </el-main>
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
 import navbar from '@/components/Navbar.vue';
+import searchbar from '@/components/searchcomponent.vue';
 
 export default {
   components: {
     navbar,
+    searchbar,
   },
   name: 'home',
-  methods: {
-    goToSearch() {
-      this.$router.push({ name: 'search', params: { string: this.query } });
-    },
-  },
   data() {
     return {
-      query: '',
       select: '',
     };
   },
@@ -53,11 +39,13 @@ export default {
 <style scoped>
   .img-valign {
     width: 90px;
+    margin: auto;
     height: auto;
     vertical-align: middle;
     margin-bottom: 4em;
   }
   .mainTitle {
+    text-align: center;
     font-size:4vw;
   }
   *.unselectable {
